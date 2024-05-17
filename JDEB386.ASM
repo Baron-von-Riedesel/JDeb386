@@ -21,6 +21,7 @@ endif
 MEMADD    equ 500h
 DEVICE_ID equ 0
 INT41     equ 1
+INT4100   equ 0	;1=handle int 41h, ax=0 (char out)
 
 VERSION textequ <"v1.2">
 
@@ -295,10 +296,22 @@ if INT41
 myint41 proc
 	cmp ax, 4Fh
 	jz @F
+ if INT4100
+	cmp ax, 0
+	jz is_0
+ endif
 	iretd
 @@:
 	mov ax, 0F386h
 	iretd
+ if INT4100
+is_0:
+	push eax
+	movzx eax, dl
+	call callint10
+	pop eax
+	iretd
+ endif
 myint41 endp
 
 endif
