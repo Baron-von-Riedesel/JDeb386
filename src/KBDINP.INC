@@ -8,7 +8,7 @@ endif
 
 ;*** keyboard BIOS variables
 
-KBDSTAT  equ   417h
+KBDSTAT  equ   417h	; two bytes
 BUFSTA	 equ   41Ah
 BUFEND	 equ   41Ch
 EBUFSTA  equ   480h
@@ -17,6 +17,8 @@ EBUFEND  equ   482h
 	.data
 
 lastk db 0
+
+	.const
 
 %	include KEYS.inc
 

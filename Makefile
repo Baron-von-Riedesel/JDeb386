@@ -49,28 +49,28 @@ VIO=1
 KBD=1
 !endif
 !ifndef KLANG
-KLANG=GR
+KLANG=US
 !endif
 
 !if $(AUX)
 AOPT=-DAUXIO=1
-srcdep=$(srcdep) auxio.inc
+srcdep=$(srcdep) src/auxio.inc
 !else
 AOPT=-DAUXIO=0
 !endif
 
 !if $(VIO)
 AOPT=-DVIOOUT=1
-srcdep=$(srcdep) vioout.inc
+srcdep=$(srcdep) src/vioout.inc
 !endif
 !if $(KBD)
 AOPT=$(AOPT) -DKBDIN=1 -DKEYS=KBD_$(KLANG)
-srcdep=$(srcdep) kbdinp.inc
+srcdep=$(srcdep) src/kbdinp.inc
 !endif
 
 !if $(DEBUG)
 AOPTD=-D_DEBUG
-srcdep=$(srcdep) dprintf.inc
+srcdep=$(srcdep) src/dprintf.inc
 !else
 AOPTD=
 !endif
@@ -78,7 +78,7 @@ AOPTD=
 OUTD=Build
 
 
-ALL: $(OUTD) $(OUTD)\$(NAME).exe
+ALL: $(OUTD) $(OUTD)\$(NAME).exe $(OUTD)\SReqHlp.exe $(OUTD)\KbdLay.bin
 
 $(OUTD):
 	@if not exist $(OUTD)\NUL @mkdir $(OUTD)
@@ -89,14 +89,20 @@ f Build\$(NAME).OBJ n Build\$(NAME).EXE
 op q,m=Build\$(NAME).MAP,stub=Build\jlstub.bin export _ddb.1 
 <<
 
-$(OUTD)\$(NAME).obj: $(NAME).asm $(OUTD)\$(DEBUGR) $(srcdep)
-	@jwasm.exe -coff -nologo -DV86=$(V86) $(AOPT) $(AOPTD) -Fl$(OUTD)\ -Fo$(OUTD)\ -Sg -I$(JEMMDIR)\Include $(NAME).asm 
+$(OUTD)\$(NAME).obj: src/$(NAME).asm $(OUTD)\$(DEBUGR) $(srcdep)
+	@jwasm.exe -coff -nologo -DV86=$(V86) $(AOPT) $(AOPTD) -Fl$(OUTD)\ -Fo$(OUTD)\ -Sg -I$(JEMMDIR)\Include src/$(NAME).asm 
 
 $(OUTD)\jlstub.bin: $(JEMMDIR)\JLM\JLSTUB\Build\JLSTUB.BIN
 	@copy $(JEMMDIR)\JLM\JLSTUB\Build\JLSTUB.BIN $(OUTD)\
 
 $(OUTD)\$(DEBUGR): $(DEBUGRDIR)\$(DEBUGR)
 	@copy $(DEBUGRDIR)\$(DEBUGR) $(OUTD)\
+
+$(OUTD)\SReqHlp.exe: src/SReqHlp.asm
+	@jwasm -nologo -mz -Fo$* src/SReqHlp.asm
+
+$(OUTD)\KbdLay.bin: src/KbdLay.asm
+	@jwasm -nologo -bin -Fo$* src/KbdLay.asm
 
 clean:
 	@del $(OUTD)\*.exe

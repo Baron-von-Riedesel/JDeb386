@@ -38,6 +38,8 @@ altgrk label byte
 	db '@'					;10
 	org altgrk + 1Bh
 	db '~'					;1B
+	org altgrk + 32h
+	db 'æ'
 	org altgrk + 36h
 	db '|'					;36 ( key 56h )
         

@@ -14,7 +14,7 @@
  initialized, it will become active when
 
   - an exception is detected; this includes debug exceptions and breakpoints
-  - SysReq ( Alt & Print ) is pressed (may not work for all BIOSes)
+  - SysReq ( Alt & Print ) is pressed; may not work with all keyboard drivers
 
   To unload JDeb386 from memory, one has to run JLoad explicitely:
   
@@ -39,6 +39,11 @@
    addresses are "invalid", causing a page fault if access is tried. Such
    errors won't do any harm.
  
+ - If pressing SysReq won't stop in the debugger, the BIOS/keyboard driver
+   may need a little help - then try SReqHlp.exe! Note that this is a very
+   simple TSR, it won't check if it's already installed, so be sure to launch
+   it just once.
+
  - JLoad installs a subset of the Win9X ring 0 API, which uses interrupt 20h
    in protected-mode as a sort of dynamic link mechanism. JDeb386 is unaware
    of this API and handles Int 20h like any other software interrupt - that is,
@@ -53,11 +58,11 @@
    as default. It's possible for JDeb386 to use the mode switching routines
    of the v86-monitor (to call BIOS function INT 10h/16h), but in many cases
    this isn't acceptable for low-level debugging.
-    These are the options regarding I/O handling of JDeb386:
-   
-    "nmake vio=0"       (disables low-level video output; BIOS int 10h used)
-    "nmake kbd=0"       (disables low-level keyboard input; BIOS int 16h used)
-    "nmake klang=gr"    (low-level keyboard input; GR layout used instead of US)
+    Low-level keyboard access needs information about the current keyboard
+   layout. There's a tool provided, PLang.exe, that writes keyboard layout
+   data into the JDeb386.exe binary. The default layout is US. Layout data
+   that's used by PLang.exe is contained in KbdLay.bin - currently it has
+   entries for US and GR - further layouts may be added.
 
 
  4. License

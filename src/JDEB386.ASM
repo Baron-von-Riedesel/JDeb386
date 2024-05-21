@@ -66,6 +66,8 @@ dwReenterI10 dd 0
 dwReenterI16 dd 0
 endif
 
+;--- the debugger core DebugRV is in _DATA16 segment
+
 _DATA16 segment para FLAT public 'DATA'
 
 start16 label byte
@@ -365,7 +367,8 @@ is_copt:
 	mov wComNo, bx
 	jmp nextchar
 disp_help:
-	.data
+
+	.const
 helptxt label byte
 	db "JDeb386 ",VERSION,13,10
 	db "To load JDeb386: JDeb386 [options]",13,10
@@ -375,6 +378,7 @@ helptxt label byte
 	db "To unload JDeb386: jload -u jdeb386.exe",13,10
 	db 0
 	.code
+
 	invoke printf, CStr("%s"), offset helptxt
 	mov eax, 80000000h	; no msg "failed to load"
 	ret
