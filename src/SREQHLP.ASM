@@ -10,11 +10,13 @@
 	.code
 
 int15 proc
+	pushf
 	cmp ax,4F54h
 	jz sysreqon
 	cmp ax,4FD4h
 	jz sysreqoff
 prev:
+	popf
 	db 0eah
 oldint15 dd 0
 sysreqon:

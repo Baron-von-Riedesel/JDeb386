@@ -1,5 +1,5 @@
 
-;--- US keyboard
+;--- US kbd layout
 
 normalk label byte
 	db 0,1Bh				;00-01 NULL, escape
@@ -25,7 +25,7 @@ shiftk label byte
 	db 0					;2A    shift-l
 	db '|'					;2B
 	db 'ZXCVBNM<>?'			;2C-35
-k56s db "|"        			;56
+	db "|"        			;56
 
 ;--- R-ALT key modifier
 

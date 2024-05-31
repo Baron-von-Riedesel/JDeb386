@@ -23,9 +23,20 @@
   For a description of the debugger commands see Debug.txt.
 
 
- 3. Features & Restrictions
+ 3. Keyboard Layouts
 
- - since JDeb386 is a JLM it has no DOS memory footprint. Also, since it
+  If no serial connection is used, the debugger will use low-level keyboard
+ access. This method needs information about the current keyboard layout.
+ The default layout is US. If this is to be changed: there's a tool provided,
+ PKLay.exe, that may patch the JDeb386.exe binary with a known keyboard layout.
+ The layout data that PKLay.exe uses is contained in file KbdLay.bin. This file
+ currently has entries for US, GR and FR - further layouts may be added.
+  Be careful when using PKLay - there are only minimal security checks!
+
+
+ 4. Features & Restrictions
+
+ - Since JDeb386 is a JLM it has no DOS memory footprint. Also, since it
    doesn't modify the IVT, it's very hard for programs to detect it, and even
    harder to protect against it.
    
@@ -35,14 +46,17 @@
    ( DOS extenders ). Those run in their very own context, with different
    address space (CR3), GDT and IDT.
 
- - The Jemm386/JemmEx address space is sparsely populated - most linear
-   addresses are "invalid", causing a page fault if access is tried. Such
-   errors won't do any harm.
+ - If a debugger command causes an exception - page or protection faults
+   mostly -, then these are reported; Such errors won't do any harm and don't
+   change the debuggee state.
  
  - If pressing SysReq won't stop in the debugger, the BIOS/keyboard driver
    may need a little help - then try SReqHlp.exe! Note that this is a very
    simple TSR, it won't check if it's already installed, so be sure to launch
    it just once.
+
+ - If the debugger is active, interrupts are disabled. So system time will get
+   "delayed" over time.
 
  - JLoad installs a subset of the Win9X ring 0 API, which uses interrupt 20h
    in protected-mode as a sort of dynamic link mechanism. JDeb386 is unaware
@@ -52,20 +66,8 @@
    arguments just behind the Int 20h. So if an Int 20h is seen, one has to
    either avoid the T(race) cmd [using G(o)] or set TM 1.
 
- - I/O handling:
-    With cmdline option /C[1-4] one may switch I/O to a serial port.
-   If this option isn't used, low-level video and keyboard access are used
-   as default. It's possible for JDeb386 to use the mode switching routines
-   of the v86-monitor (to call BIOS function INT 10h/16h), but in many cases
-   this isn't acceptable for low-level debugging.
-    Low-level keyboard access needs information about the current keyboard
-   layout. There's a tool provided, PLang.exe, that writes keyboard layout
-   data into the JDeb386.exe binary. The default layout is US. Layout data
-   that's used by PLang.exe is contained in KbdLay.bin - currently it has
-   entries for US and GR - further layouts may be added.
 
-
- 4. License
+ 5. License
 
  JDeb386 is released under the MIT license. See license.txt for details.
 

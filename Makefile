@@ -1,24 +1,15 @@
 
-# create JDeb386.exe
+# NMAKE makefile to create JDeb386.exe & SReqHlp.exe
 # tools used: 
-# - jwasm
-# - jwlink
-# - nmake compatible make
+# - JWasm & JWlink
 # - DebugR/DebugRV variants from Debug/X project ( see DEBUGRDIR below ).
 # - Jemm include files from Jemm project ( see JEMMDIR below ).
-
-# video and keyboard i/O may be selected by:
-# run "nmake vio=1"        for a variant that uses low-level vio output.
-# run "nmake kbd=1"        for a variant that uses low-level kbd access.
-
-# kbd=1 needs a language ( US and GR are supplied ):
-# run "nmake kbd=1 klang=gr" ; for low-level kbd access, German translation.
 
 # to select DebugR (non v86-mode variant) instead of DebugRV:
 # run "nmake v86=0"
 
 # jwasm's option -pe cannot be used, since the DDB cannot be exported then;
-# so jwlink is necessary ( it may create slightly larger binaries ).
+# so jwlink is necessary.
 
 !ifndef DEBUG
 DEBUG=0
@@ -78,7 +69,7 @@ AOPTD=
 OUTD=Build
 
 
-ALL: $(OUTD) $(OUTD)\$(NAME).exe $(OUTD)\SReqHlp.exe $(OUTD)\KbdLay.bin
+ALL: $(OUTD) $(OUTD)\$(NAME).exe $(OUTD)\SReqHlp.exe
 
 $(OUTD):
 	@if not exist $(OUTD)\NUL @mkdir $(OUTD)
@@ -90,7 +81,7 @@ op q,m=Build\$(NAME).MAP,stub=Build\jlstub.bin export _ddb.1
 <<
 
 $(OUTD)\$(NAME).obj: src/$(NAME).asm $(OUTD)\$(DEBUGR) $(srcdep)
-	@jwasm.exe -coff -nologo -DV86=$(V86) $(AOPT) $(AOPTD) -Fl$(OUTD)\ -Fo$(OUTD)\ -Sg -I$(JEMMDIR)\Include src/$(NAME).asm 
+	@jwasm.exe -coff -nologo -IKbdLay -DV86=$(V86) $(AOPT) $(AOPTD) -Fl$(OUTD)\ -Fo$(OUTD)\ -Sg -I$(JEMMDIR)\Include src/$(NAME).asm 
 
 $(OUTD)\jlstub.bin: $(JEMMDIR)\JLM\JLSTUB\Build\JLSTUB.BIN
 	@copy $(JEMMDIR)\JLM\JLSTUB\Build\JLSTUB.BIN $(OUTD)\
@@ -99,10 +90,7 @@ $(OUTD)\$(DEBUGR): $(DEBUGRDIR)\$(DEBUGR)
 	@copy $(DEBUGRDIR)\$(DEBUGR) $(OUTD)\
 
 $(OUTD)\SReqHlp.exe: src/SReqHlp.asm
-	@jwasm -nologo -mz -Fo$* src/SReqHlp.asm
-
-$(OUTD)\KbdLay.bin: src/KbdLay.asm
-	@jwasm -nologo -bin -Fo$* src/KbdLay.asm
+	@jwasm -nologo -mz -Fl$* -Fo$* src/SReqHlp.asm
 
 clean:
 	@del $(OUTD)\*.exe
