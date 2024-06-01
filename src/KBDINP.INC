@@ -2,8 +2,8 @@
 ;--- poll keyboard (US/GR keys)
 ;--- ds/es=flat, cs=flat
 
-ifndef KEYS
-KEYS textequ <KBD_US>
+ifndef KLAYOUT
+KLAYOUT textequ <KBD_US>
 endif
 
 ;*** keyboard BIOS variables
@@ -20,7 +20,7 @@ lastk db 0
 
 	.const
 
-%	include KEYS.inc
+%	include KLAYOUT.inc
 
 cntlkeystab label byte
 	db 36h		;R-SH		;codes ctrl keys

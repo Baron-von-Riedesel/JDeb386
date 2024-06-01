@@ -39,9 +39,6 @@ VIO=1
 !ifndef KBD
 KBD=1
 !endif
-!ifndef KLANG
-KLANG=US
-!endif
 
 !if $(AUX)
 AOPT=-DAUXIO=1
@@ -55,7 +52,7 @@ AOPT=-DVIOOUT=1
 srcdep=$(srcdep) src/vioout.inc
 !endif
 !if $(KBD)
-AOPT=$(AOPT) -DKBDIN=1 -DKEYS=KBD_$(KLANG)
+AOPT=$(AOPT) -DKBDIN=1
 srcdep=$(srcdep) src/kbdinp.inc
 !endif
 
@@ -67,7 +64,6 @@ AOPTD=
 !endif
 
 OUTD=Build
-
 
 ALL: $(OUTD) $(OUTD)\$(NAME).exe $(OUTD)\SReqHlp.exe
 
@@ -81,7 +77,7 @@ op q,m=Build\$(NAME).MAP,stub=Build\jlstub.bin export _ddb.1
 <<
 
 $(OUTD)\$(NAME).obj: src/$(NAME).asm $(OUTD)\$(DEBUGR) $(srcdep)
-	@jwasm.exe -coff -nologo -IKbdLay -DV86=$(V86) $(AOPT) $(AOPTD) -Fl$(OUTD)\ -Fo$(OUTD)\ -Sg -I$(JEMMDIR)\Include src/$(NAME).asm 
+	@jwasm.exe -coff -nologo -I KbdLay -DV86=$(V86) $(AOPT) $(AOPTD) -Fl$(OUTD)\ -Fo$(OUTD)\ -Sg -I$(JEMMDIR)\Include src/$(NAME).asm 
 
 $(OUTD)\jlstub.bin: $(JEMMDIR)\JLM\JLSTUB\Build\JLSTUB.BIN
 	@copy $(JEMMDIR)\JLM\JLSTUB\Build\JLSTUB.BIN $(OUTD)\
